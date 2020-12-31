@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
-const path = require("path");
 const { places, descriptors } = require('./seedshelper');
 const cities = require('./cities');
-const campground = require('../models/campground');
+const Camp = require('../models/campground');
 
 mongoose.connect('mongodb://localhost:27017/yelpcamp2',{
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex:true
+    useCreateIndex:true,
+    useUnifiedTopology: true
 });
 
 const db = mongoose.connection;
@@ -18,33 +17,36 @@ db.once("open" , ()=>{
 
 const sample = array => array[Math.floor(Math.random() * array.length)];
 
-// const seeddb = async() => {
-//     await campground.deleteMany({});
-//     for(let i=0;i<50;i++){
-//         const num = Math.floor(Math.random()*1000);
-//         const campg = new campground({
-//             location : `${cities[num].city} , ${cities[num].state}`,
-//             name : `${sample(descriptors)} ${sample(places)}`
-//         })
-//         await campg.save();
-//         console.log(campg.name);
-//         console.log(campg.location);
-//     }
-// }
-
-
 const seeddb = async () => {
-    await campground.deleteMany({});
-    for (let i = 0; i < 50; i++) {
-        // const random1000 = Math.floor(Math.random() * 1000);
+    await Camp.deleteMany({});
+    for (let i = 0; i < 200; i++) {
+        const random1000 = Math.floor(Math.random() * 1000);
         const random = Math.floor(Math.random()*1000) + 2000;
         const camp = new Camp({
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            author:'5fe97af1a8e3760ec0500e51',
             title: `${sample(descriptors)} ${sample(places)}`,
-            image:'https://source.unsplash.com/collection/483251',
+            geometry: {
+                type: "Point",
+                coordinates: [
+                    cities[random1000].longitude,
+                    cities[random1000].latitude,
+                ]
+            },
+            images: [
+                {
+                  url: 'https://source.unsplash.com/collection/483251',
+                  filename: 'YelpCamp/it7voez8pxdqeh3jkewj'
+                },
+                {
+                  url: 'https://source.unsplash.com/collection/483251',
+                  filename: 'YelpCamp/euvycgjcuqhz0cc0dzc0'
+                }
+            ],
             description:'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus, illo. Numquam enim perferendis in quae.Magnam amet explicabo hic adipisci commodi maxime rem ipsa ducimus id perspiciatis iste, ab odit!',
             price:random
         })
+        // console.log(camp);
         await camp.save();
     }
 }
