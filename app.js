@@ -18,6 +18,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 // const findOrCreate = require('mongoose-findorcreate');
 const catchAsync = require('./utils/catchAsync');
 
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelpcamp2';
 
 const campgroundroutes = require('./routes/campground');
 const reviewroutes = require('./routes/reviews');
@@ -26,7 +27,7 @@ const authroutes = require('./routes/users');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-mongoose.connect('mongodb://localhost:27017/yelpcamp2',{
+mongoose.connect(dbUrl,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex:true,
@@ -165,6 +166,7 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render('error',{ err });
 });
 
+const port = process.env.PORT || 3000;
 app.listen(3000,()=>{
     console.log("THE APP STARTS , WE SERVE PORT 3000");
 });
